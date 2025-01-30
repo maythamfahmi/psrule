@@ -1,0 +1,63 @@
+# Options can be found here: https://github.com/microsoft/PSRule/blob/main/docs/concepts/PSRule/en-US/about_PSRule_Options.md
+requires:
+  PSRule: ">=2.9.0"
+  PSRule.Rules.Azure: ">=1.39.0"
+  PSRule.Rules.CAF: ">=0.3.0"
+
+execution:
+  unprocessedObject: Ignore
+  ruleSuppressed: Ignore
+
+configuration:
+  AZURE_PARAMETER_FILE_EXPANSION: false
+  AZURE_PARAMETER_FILE_METADATA_LINK: false
+
+  # Disable expansion of Azure Bicep files as bicep files are discovered via the parameter files
+  AZURE_BICEP_FILE_EXPANSION: false
+  AZURE_BICEP_PARAMS_FILE_EXPANSION: true
+  AZURE_BICEP_FILE_EXPANSION_TIMEOUT: 60
+  # PSRULE_AZURE_RESOURCE_MODULE_NOWARN: true
+
+  # CAF_ResourceGroupMandatoryTags:
+
+  #Specify the tag (key) and valid values
+  CAF_EnvironmentTag: Environment
+  CAF_Environments:
+    - dev
+    - test
+    - prod
+
+  # Specify the Baseline to scan agents https://azure.github.io/PSRule.Rules.Azure/en/baselines/Azure.All/
+  baseline: Azure.All
+
+include:
+  module:
+    - PSRule.Rules.Azure
+    - PSRule.Rules.CAF
+
+output:
+  outcome: All
+  format: NUnit3
+  path: tmp/TEST-PSRule.xml
+  culture:
+    - en-US
+
+# Configure binding for local rules.
+binding:
+  preferTargetInfo: true
+  targetType:
+    - type
+    - resourceType
+
+rule:
+  includeLocal: true
+  exclude:
+    - Azure.Storage.UseReplication
+    - Azure.Storage.BlobPublicAccess
+
+input:
+  pathIgnore:
+    # Exclude all
+    - "*"
+    # Exclude module files
+    - "!**/main.*.bicepparam"

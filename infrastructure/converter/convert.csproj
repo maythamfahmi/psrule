@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+		<NoWarn>BCP081</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Azure.Bicep.CommandLine.linux-x64" Version="0.32.4" Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
+        <PackageReference Include="Azure.Bicep.CommandLine.win-x64" Version="0.32.4" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
+        <PackageReference Include="Azure.Bicep.MSBuild" Version="0.32.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <BicepParam Include="..\infra\shared\*.bicepparam" OutputFile="..\infra\%(FileName).parameters.json" />
+    </ItemGroup>
+
+    <Target Name="PostClean" AfterTargets="Clean">
+        <RemoveDir Directories="$(BaseIntermediateOutputPath)" />
+        <RemoveDir Directories="$(BaseOutputPath)" />
+    </Target>
+
+</Project>

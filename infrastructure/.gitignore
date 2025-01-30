@@ -414,10 +414,3 @@ deploy-local.ps1
 local-deploy.ps1
 note.txt
 !bicepconfig.json
-converter/
-
-## the following folder should be copied from template before it works. there fore they are ignored
-infra/core
-infra/functions
-infra/modules
-tests
